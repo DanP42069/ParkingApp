@@ -54,8 +54,7 @@ const addParking = () => {
 		.replace('(', '')
 		.replace(')', '')
 		.split(',');
-
-	//TODO
+	const address = document.getElementById('newParkingAddress').value;
 };
 
 /**
