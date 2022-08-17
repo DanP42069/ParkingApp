@@ -40,7 +40,9 @@ const parkingClick = (e) => {
  * Mark parking as taken
  */
 const deleteCurrParking = () => {
-	//TODO
+	fetch(`http://localhost:3000/api/parking/${currParkingId}`, { method: 'DELETE' }).then(() => {
+		refreshParkings();
+	});
 };
 
 /**
@@ -55,6 +57,18 @@ const addParking = () => {
 		.replace(')', '')
 		.split(',');
 	const address = document.getElementById('newParkingAddress').value;
+	let parking = {
+		x_coord: coords[0],
+		y_coord: coords[1],
+		address,
+	};
+	fetch('http://localhost:3000/api/parking', {
+		method: 'POST',
+		body: JSON.stringify(parking),
+		headers: { 'content-type': 'application/json' },
+	}).then(() => {
+		refreshParkings();
+	});
 };
 
 /**

@@ -1,16 +1,1 @@
-[
-	{
-		"id": "1",
-		"x_coord": 600,
-		"y_coord": 600,
-		"address": "Rothchield 133",
-		"time": "Tue Aug 16 2022"
-	},
-	{
-		"id": "2",
-		"x_coord": 123,
-		"y_coord": 456,
-		"address": "miami",
-		"time": "Tue Aug 16 2022"
-	}
-]
+[{"id":"2","x_coord":123,"y_coord":456,"address":"miami","time":"Tue Aug 16 2022"},{"id":"OZk3-9yAb","x_coord":"889","y_coord":"698","address":"swfdgegefgrfeg","time":1660725145658},{"id":"Gq_vUeClV","x_coord":"632","y_coord":"662","address":"אמא שלך היפופוטם","time":1660725681334}]
