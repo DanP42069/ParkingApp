@@ -1,3 +1,4 @@
+'use strict';
 const { Client } = require('pg');
 
 async function connection() {
@@ -47,8 +48,10 @@ const deleteParking = async (id) => {
 	try {
 		const query = { text: 'DELETE FROM public.t_park WHERE id=$1', values: [id] };
 		const result = await con.query(query);
+        return true;
 	} catch (err) {
 		console.log(err);
+        return false;
 	} finally {
 		await con.end();
 	}
@@ -56,17 +59,17 @@ const deleteParking = async (id) => {
 
 const addParking = async (newParking) => {
 	const con = await connection();
-    const query = {
-        text: 'INSERT INTO t_park VALUES ($1,$2,$3,$4,$5)',
-        values: [
-            newParking.id,
-            newParking.x_coord,
-            newParking.y_coord,
-            newParking.address,
-            newParking.time,
-        ],
-    };
-    const result = await con.query(query);
+	const query = {
+		text: 'INSERT INTO t_park VALUES ($1,$2,$3,$4,$5)',
+		values: [
+			newParking.id,
+			newParking.x_coord,
+			newParking.y_coord,
+			newParking.address,
+			newParking.time,
+		],
+	};
+	const result = await con.query(query);
 	try {
 	} catch (err) {
 		console.log(err);
@@ -75,10 +78,10 @@ const addParking = async (newParking) => {
 	}
 };
 
-addParking({
-    id: 'dsfgsdfg',
-    x_coord: 2300,
-    y_coord: 1000,
-    address: 'sdfds df 43',
-    time: 324239923492349
-})
+module.exports = {
+    getParkings,
+    deleteParking,
+    addParking
+}
+
+

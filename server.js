@@ -1,6 +1,6 @@
 const express = require('express');
 const shortid = require('shortid');
-const { getParkings, updateParkings } = require('./utils');
+const { getParkings, deleteParking, addParking } = require('./database');
 const PORT = 3000;
 
 const app = express();
@@ -10,9 +10,9 @@ app.use(CORS());
 
 //Endpoints
 
-app.get('/api/parking/:id', (req, res) => {
+app.get('/api/parking/:id', async (req, res) => {
 	const parkingId = req.params.id;
-	const parkings = getParkings();
+	const parkings = await getParkings();
 	requestedParking = parkings.find((parking) => parking.id === parkingId);
 
 	if (!requestedParking) {
@@ -21,8 +21,8 @@ app.get('/api/parking/:id', (req, res) => {
 		res.send(requestedParking);
 	}
 });
-app.get('/api/parkings', (req, res) => {
-	const parkings = getParkings();
+app.get('/api/parkings', async (req, res) => {
+	const parkings = await getParkings();
 
 	if (!parkings || !parkings.length) {
 		res.status(404).send(`Parkings do not exist`);
@@ -32,8 +32,7 @@ app.get('/api/parkings', (req, res) => {
 });
 
 //  Create
-app.post('/api/parking', (req, res) => {
-	const parkings = getParkings();
+app.post('/api/parking', async (req, res) => {
 	const newParking = {
 		id: shortid.generate(),
 		x_coord: req.body.x_coord,
@@ -41,43 +40,30 @@ app.post('/api/parking', (req, res) => {
 		address: req.body.address,
 		time: Date.now(),
 	};
-
-	parkings.push(newParking);
-	updateParkings(parkings);
+	await addParking(newParking);
 	res.send(newParking);
 });
 
-app.put('/api/parking', (req, res) => {
-	const id = req.body.id;
-	const parkings = getParkings();
-	let updatedParkings = parkings.map((parking) => (parking.id === id ? req.body : parking));
-	updateParkings(updatedParkings);
-	res.send(req.body);
-});
+// app.put('/api/parking', (req, res) => {
+// 	const id = req.body.id;
+// 	const parkings = getParkings();
+// 	let updatedParkings = parkings.map((parking) => (parking.id === id ? req.body : parking));
+// 	updateParkings(updatedParkings);
+// 	res.send(req.body);
+// });
 
 //Delete
-app.delete('/api/parking/:id', (req, res) => {
+ app.delete('/api/parking/:id', async (req, res) => {
 	const parkingId = req.params.id;
-	const parkings = getParkings();
 
 	//findIndex+splice
-	const indexToRemove = parkings.findIndex((parking) => parking.id === parkingId);
-	if (indexToRemove === -1) {
+	if (!await deleteParking(parkingId)) {
 		res.status(404).send('Parking not found. Deletion failed.');
 	} else {
-		parkings.splice(indexToRemove, 1);
-		updateParkings(parkings);
+		
 		res.send(`Parking ${parkingId} has been deleted`);
 	}
-	//filter
-
-	const updatedParkings = parkings.filter((parking) => parking.id !== parkingId);
-	if (updateParkings.length === parkings.length) {
-		res.status(404).send('Parking not found. Deletion failed.');
-	} else {
-		updateParkings(updatedParkings);
-		res.send(`Parking ${parkingId} has been deleted`);
-	}
+	
 });
 
 app.listen(PORT, function (err) {
