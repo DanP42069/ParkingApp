@@ -81,7 +81,8 @@ const addParking = async (newParking) => {
 module.exports = {
     getParkings,
     deleteParking,
-    addParking
+    addParking,
+    getParking
 }
 
 

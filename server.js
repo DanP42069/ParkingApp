@@ -1,6 +1,6 @@
 const express = require('express');
 const shortid = require('shortid');
-const { getParkings, deleteParking, addParking } = require('./database');
+const { getParkings, deleteParking, addParking, getParking } = require('./database');
 const PORT = 3000;
 
 const app = express();
@@ -12,8 +12,7 @@ app.use(CORS());
 
 app.get('/api/parking/:id', async (req, res) => {
 	const parkingId = req.params.id;
-	const parkings = await getParkings();
-	requestedParking = parkings.find((parking) => parking.id === parkingId);
+	requestedParking = await getParking(parkingId);
 
 	if (!requestedParking) {
 		res.status(404).send(`parking ${parkingId} not found`);
@@ -53,17 +52,15 @@ app.post('/api/parking', async (req, res) => {
 // });
 
 //Delete
- app.delete('/api/parking/:id', async (req, res) => {
+app.delete('/api/parking/:id', async (req, res) => {
 	const parkingId = req.params.id;
 
 	//findIndex+splice
-	if (!await deleteParking(parkingId)) {
+	if (!(await deleteParking(parkingId))) {
 		res.status(404).send('Parking not found. Deletion failed.');
 	} else {
-		
 		res.send(`Parking ${parkingId} has been deleted`);
 	}
-	
 });
 
 app.listen(PORT, function (err) {
